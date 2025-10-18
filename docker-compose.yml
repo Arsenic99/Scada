@@ -7,6 +7,8 @@ services:
     container_name: backend
     ports:
       - "5000:5000"
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -17,6 +19,8 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    networks:
+      - app-network
 
   nginx:
     image: nginx:latest
@@ -28,3 +32,9 @@ services:
     depends_on:
       - frontend
       - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
