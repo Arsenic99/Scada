@@ -18,6 +18,7 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      ".prisma" // должен проигнорировать ошибки в generated prisma
     ],
   },
 ];
