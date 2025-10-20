@@ -1,17 +1,13 @@
-# Базовый образ Node.js
 FROM node:20-alpine
 
-# Создаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json (или pnpm/yarn.lock)
 COPY package*.json ./
+COPY tsconfig.json ./
 
-# Устанавливаем зависимости
-RUN npm install --production
+RUN npm install
 
-# Копируем весь код worker (в docker-compose будет build.context каждой PLC)
+# Копируем исходники (в docker-compose смонтируем нужную папку)
 COPY . .
 
-# Запуск worker
-CMD ["node", "worker.js"]
+CMD ["npx", "ts-node", "worker.ts"]
