@@ -1,5 +1,20 @@
 version: "3"
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: scada
+      POSTGRES_PASSWORD: scada123
+      POSTGRES_DB: scada_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
   backend:
     build:
       context: .
@@ -7,8 +22,11 @@ services:
     container_name: backend
     ports:
       - "5000:5000"
+    depends_on:
+      - postgres
     networks:
       - app-network
+    restart: unless-stopped
 
   frontend:
     build:
@@ -21,6 +39,43 @@ services:
       - backend
     networks:
       - app-network
+    restart: unless-stopped
+
+worker_plc1:
+  build:
+    context: ./worker_plc1
+    dockerfile: ../worker_common/Dockerfile.worker
+  container_name: worker_plc1
+  env_file: ./worker_plc1/.env
+  depends_on:
+    - postgres
+  networks:
+    - app-network
+  restart: unless-stopped
+
+worker_plc2:
+  build:
+    context: ./worker_plc2
+    dockerfile: ../worker_common/Dockerfile.worker
+  container_name: worker_plc2
+  env_file: ./worker_plc2/.env
+  depends_on:
+    - postgres
+  networks:
+    - app-network
+  restart: unless-stopped
+
+worker_plc3:
+  build:
+    context: ./worker_plc3
+    dockerfile: ../worker_common/Dockerfile.worker
+  container_name: worker_plc3
+  env_file: ./worker_plc3/.env
+  depends_on:
+    - postgres
+  networks:
+    - app-network
+  restart: unless-stopped
 
   nginx:
     image: nginx:latest
@@ -34,6 +89,10 @@ services:
       - backend
     networks:
       - app-network
+    restart: unless-stopped
+
+volumes:
+  pgdata:
 
 networks:
   app-network:
