@@ -1,0 +1,12 @@
+{
+    "name": "worker",
+    "version": "1.0.0",
+    "main": "worker_plc2.js",
+    "type": "module",
+    "scripts": {
+        "start": "node worker_plc2.js"
+    },
+    "dependencies": {
+        "node-snap7": "^1.0.3"
+    }
+}

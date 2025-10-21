@@ -1,0 +1,20 @@
+# === Worker container ===
+FROM node:20
+
+# Рабочая директория внутри контейнера
+WORKDIR /app
+
+# Копируем package.json из worker
+COPY worker/package*.json ./
+
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем остальной код воркера
+COPY worker .
+
+# Можно задавать IP PLC через переменную окружения
+ENV PLC_IP=172.28.66.2
+
+# Запуск worker
+CMD ["npm", "start"]
